@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="/static/fv.ico" rel="icon">
+    <title>Talk GPT</title>
+    <style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+   h1 {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+<!--        text-decoration: underline;-->
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+        justify-content: space-evenly;
+    }
+
+
+    input[type="text"] {
+        width: 300px;
+        padding: 10px;
+        font-size: 20px;
+    }
+
+    input[type="radio"] {
+        margin: 10px;
+    }
+
+    input[type="submit"] {
+        padding: 10px 20px;
+        font-size: 18px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    #response {
+    width:50%;
+
+    }
+</style>
+
+</head>
+<body>
+<div class="center">
+    <h1>Text To Speech </h1>
+    <form id="command-form" action="/process_command" method="POST">
+        <input type="text" name="command" placeholder="Enter your command" style="font-size: 22px;">
+        <br>
+        <input type="radio" name="choice" value="1" checked> Print Response
+        <input type="radio" name="choice" value="2"> Print and Hear Response
+        <br>
+        <br>
+        <input type="submit" value="Submit">
+        <br>
+        <br>
+        <span id="response" style="font-size: 22px;"></span>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#command-form').submit(function(event) {
+            event.preventDefault(); // Prevent form submission
+            var formData = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/process_command',
+                data: formData,
+                success: function(data) {
+                    var choice = $('input[name="choice"]:checked').val();
+                    if (choice === "1" || choice === "2") {
+                        var response = data.trim();
+                        $('#response').text(response);
+                        if (choice === "2") {
+                            var utterance = new SpeechSynthesisUtterance(response);
+                            window.speechSynthesis.speak(utterance);
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</div>
+</body>
+</html>
