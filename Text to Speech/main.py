@@ -6,7 +6,7 @@ import pyttsx3
 app = Flask(__name__)
 engine = pyttsx3.init()
 listener = sr.Recognizer()
-openai.api_key = "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"
+openai.api_key = "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"("your api key")
 
 
 @app.route('/')
